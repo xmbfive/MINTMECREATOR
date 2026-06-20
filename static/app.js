@@ -1,34 +1,90 @@
-// State
+// ============================================
+// STATE
+// ============================================
 let provider = null;
 let signer = null;
 let userAddress = null;
+let isDeploying = false;
 
-// DOM Elements
+// ============================================
+// DOM ELEMENTS
+// ============================================
 const connectBtn = document.getElementById('connectWallet');
 const walletInfo = document.getElementById('walletInfo');
 const walletAddress = document.getElementById('walletAddress');
 const walletBalance = document.getElementById('walletBalance');
+const walletStatus = document.getElementById('walletStatus');
+const statusDot = document.getElementById('statusDot');
 const deployForm = document.getElementById('deployForm');
 const deployBtn = document.getElementById('deployBtn');
 const statusDiv = document.getElementById('status');
 const resultDiv = document.getElementById('result');
 const ownerAddressInput = document.getElementById('ownerAddress');
+const totalDeployed = document.getElementById('totalDeployed');
 
-// Connect Wallet
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+function formatAddress(address) {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+function formatNumber(num) {
+    return new Intl.NumberFormat().format(num);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// ============================================
+// STATUS MANAGEMENT
+// ============================================
+function showStatus(type, message) {
+    statusDiv.className = 'status ' + type;
+    statusDiv.innerHTML = `
+        <span class="status-icon">${type === 'loading' ? '⏳' : type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span>${message}</span>
+    `;
+    statusDiv.style.display = 'flex';
+    
+    if (type === 'success' || type === 'error') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 8000);
+    }
+}
+
+function updateWalletStatus(connected) {
+    if (connected) {
+        statusDot.className = 'status-dot connected';
+        walletStatus.textContent = 'Connected';
+    } else {
+        statusDot.className = 'status-dot';
+        walletStatus.textContent = 'Not Connected';
+    }
+}
+
+// ============================================
+// WALLET CONNECTION
+// ============================================
 connectBtn.addEventListener('click', async () => {
     try {
+        // Check for MetaMask
         if (typeof window.ethereum === 'undefined') {
-            showStatus('error', '❌ Please install MetaMask or a Web3 wallet');
+            showStatus('error', '🦊 Please install MetaMask or a Web3 wallet');
             return;
         }
 
+        // Request accounts
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
         userAddress = await signer.getAddress();
         
-        // Display wallet info
-        walletAddress.textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+        // Update UI
+        walletAddress.textContent = formatAddress(userAddress);
         ownerAddressInput.value = userAddress;
         
         // Get balance
@@ -36,169 +92,10 @@ connectBtn.addEventListener('click', async () => {
         const balanceMintme = ethers.utils.formatEther(balance);
         walletBalance.textContent = parseFloat(balanceMintme).toFixed(4);
         
-        walletInfo.style.display = 'block';
-        connectBtn.textContent = '✅ Connected';
+        walletInfo.style.display = 'flex';
+        connectBtn.innerHTML = `
+            <span class="btn-icon">✅</span>
+            <span class="btn-text">Connected</span>
+        `;
         connectBtn.disabled = true;
-        deployBtn.disabled = false;
-        
-        showStatus('success', '✅ Wallet connected successfully!');
-        
-        // Listen for account changes
-        window.ethereum.on('accountsChanged', (accounts) => {
-            if (accounts.length === 0) {
-                // Disconnected
-                resetWallet();
-            } else {
-                userAddress = accounts[0];
-                walletAddress.textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
-                ownerAddressInput.value = userAddress;
-                showStatus('success', '✅ Account changed');
-            }
-        });
-        
-    } catch (error) {
-        console.error('Connection error:', error);
-        showStatus('error', `❌ Connection failed: ${error.message}`);
-    }
-});
-
-function resetWallet() {
-    userAddress = null;
-    walletInfo.style.display = 'none';
-    connectBtn.textContent = 'Connect Wallet';
-    connectBtn.disabled = false;
-    deployBtn.disabled = true;
-    ownerAddressInput.value = '';
-    showStatus('info', '🔄 Wallet disconnected');
-}
-
-// Deploy Token
-deployForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    if (!userAddress) {
-        showStatus('error', '❌ Please connect your wallet first');
-        return;
-    }
-    
-    const tokenName = document.getElementById('tokenName').value.trim();
-    const tokenSymbol = document.getElementById('tokenSymbol').value.trim().toUpperCase();
-    const initialSupply = document.getElementById('initialSupply').value.trim();
-    const ownerAddress = document.getElementById('ownerAddress').value.trim();
-    
-    // Validate
-    if (!tokenName || !tokenSymbol || !initialSupply || !ownerAddress) {
-        showStatus('error', '❌ Please fill all fields');
-        return;
-    }
-    
-    if (!ethers.utils.isAddress(ownerAddress)) {
-        showStatus('error', '❌ Invalid owner address');
-        return;
-    }
-    
-    try {
-        deployBtn.disabled = true;
-        deployBtn.textContent = '⏳ Deploying...';
-        showStatus('loading', '⏳ Deploying your token... This may take a moment');
-        resultDiv.style.display = 'none';
-        
-        // Prepare request
-        const requestData = {
-            token_name: tokenName,
-            token_symbol: tokenSymbol,
-            initial_supply: parseInt(initialSupply),
-            owner_address: ownerAddress
-        };
-        
-        // Send to backend
-        const response = await fetch('/api/deploy', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData)
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || 'Deployment failed');
-        }
-        
-        if (data.success) {
-            showStatus('success', '✅ Token deployed successfully!');
-            
-            // Show result
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h3>🎉 Token Deployed!</h3>
-                <div class="result-item">
-                    <span class="result-label">Token:</span>
-                    <span class="result-value">${data.token_name} (${data.token_symbol})</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Contract Address:</span>
-                    <span class="result-value">${data.contract_address}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Owner:</span>
-                    <span class="result-value">${data.owner}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Total Supply:</span>
-                    <span class="result-value">${data.total_supply}</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Deployment Cost:</span>
-                    <span class="result-value">${data.deployment_cost} MINTME</span>
-                </div>
-                <a href="${data.explorer_url}" target="_blank" class="explorer-link">
-                    🔍 View on Explorer →
-                </a>
-            `;
-            
-            // Reset form
-            document.getElementById('tokenName').value = '';
-            document.getElementById('tokenSymbol').value = '';
-            document.getElementById('initialSupply').value = '';
-            
-        } else {
-            throw new Error(data.error || 'Deployment failed');
-        }
-        
-    } catch (error) {
-        console.error('Deployment error:', error);
-        showStatus('error', `❌ ${error.message}`);
-    } finally {
-        deployBtn.disabled = false;
-        deployBtn.textContent = 'Deploy Token';
-    }
-});
-
-function showStatus(type, message) {
-    statusDiv.className = 'status ' + type;
-    statusDiv.textContent = message;
-    statusDiv.style.display = 'block';
-    
-    if (type === 'success' || type === 'error') {
-        setTimeout(() => {
-            statusDiv.style.display = 'none';
-        }, 10000);
-    }
-}
-
-// Check if wallet is already connected
-window.addEventListener('load', async () => {
-    if (typeof window.ethereum !== 'undefined') {
-        try {
-            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-            if (accounts.length > 0) {
-                // Auto-connect
-                connectBtn.click();
-            }
-        } catch (error) {
-            console.log('Auto-connect skipped');
-        }
-    }
-});
+        deployBtn.disabled = false
