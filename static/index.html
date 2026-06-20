@@ -3,139 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MintMe Token Deployer - Deploy Your Token</title>
+    <title>MintMe Token Deployer - Deploy Your Token on MintMe Blockchain</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
-        <div class="bg-circle bg-circle-1"></div>
-        <div class="bg-circle bg-circle-2"></div>
-        <div class="bg-circle bg-circle-3"></div>
-    </div>
+    <!-- Premium Animated Background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
 
-    <!-- Main Container -->
     <div class="container">
-        <!-- Header -->
+        <!-- Premium Header -->
         <div class="header">
-            <div class="logo-container">
-                <div class="logo-icon">🚀</div>
-                <span class="badge">v2.0</span>
-            </div>
-            <h1>MintMe Token <span class="gradient-text">Deployer</span></h1>
-            <p class="subtitle">Deploy your token in minutes • No private keys required</p>
-        </div>
-
-        <!-- Stats Row -->
-        <div class="stats-row">
-            <div class="stat-item">
-                <span class="stat-label">Total Deployed</span>
-                <span class="stat-value" id="totalDeployed">1,247</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-label">Network</span>
-                <span class="stat-value">MintMe</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-label">Chain ID</span>
-                <span class="stat-value">24734</span>
-            </div>
-        </div>
-
-        <!-- Wallet Section -->
-        <div class="wallet-section">
-            <div class="wallet-status">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="walletStatus">Not Connected</span>
-            </div>
-            <button id="connectWallet" class="btn btn-primary">
-                <span class="btn-icon">🦊</span>
-                <span class="btn-text">Connect Wallet</span>
-            </button>
-            <div id="walletInfo" class="wallet-info" style="display:none;">
-                <div class="wallet-address">
-                    <span class="label">Connected</span>
-                    <span id="walletAddress" class="address"></span>
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <rect width="40" height="40" rx="12" fill="url(#logoGrad)"/>
+                            <path d="M20 8L24 16L20 24L16 16L20 8Z" fill="white" opacity="0.9"/>
+                            <path d="M12 18L20 14L28 18L20 22L12 18Z" fill="white" opacity="0.6"/>
+                            <path d="M12 26L20 22L28 26L20 30L12 26Z" fill="white" opacity="0.4"/>
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                                    <stop offset="0%" stop-color="#6C5CE7"/>
+                                    <stop offset="100%" stop-color="#00CEC9"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="logo-text">MintMe</span>
+                        <span class="logo-badge">Deployer</span>
+                    </div>
                 </div>
-                <div class="wallet-balance">
-                    <span class="label">Balance</span>
-                    <span id="walletBalance" class="balance"></span>
-                    <span class="currency">MINTME</span>
+                <div class="header-actions">
+                    <span class="network-badge">
+                        <span class="network-dot"></span>
+                        MintMe Mainnet
+                    </span>
                 </div>
             </div>
-        </div>
-
-        <!-- Cost Banner -->
-        <div class="cost-banner">
-            <div class="cost-content">
-                <div class="cost-icon">💰</div>
-                <div class="cost-details">
-                    <span class="cost-label">Deployment Fee</span>
-                    <span class="cost-value">4,000 MINTME</span>
-                    <span class="cost-usd">≈ $2.10 USD</span>
-                </div>
-                <div class="cost-badge">Best Price</div>
+            
+            <div class="header-content">
+                <h1>Deploy Your Token on <br><span class="gradient-text">MintMe Blockchain</span></h1>
+                <p class="subtitle">Launch your project in minutes with zero technical complexity</p>
             </div>
         </div>
 
-        <!-- Form Section -->
-        <div class="form-container">
-            <div class="form-header">
-                <h3>✨ Token Details</h3>
-                <span class="form-step">Step 2 of 3</span>
+        <!-- Premium Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon">📊</div>
+                <div class="stat-card-content">
+                    <span class="stat-card-label">Total Deployed</span>
+                    <span class="stat-card-value" id="totalDeployed">1,247</span>
+                </div>
+                <div class="stat-card-trend up">↑ 12%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">⛓️</div>
+                <div class="stat-card-content">
+                    <span class="stat-card-label">Network</span>
+                    <span class="stat-card-value">MintMe</span>
+                </div>
+                <div class="stat-card-trend">Chain ID: 24734</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">⚡</div>
+                <div class="stat-card-content">
+                    <span class="stat-card-label">Fee</span>
+                    <span class="stat-card-value">4,000 MINTME</span>
+                </div>
+                <div class="stat-card-trend">≈ $2.10 USD</div>
+            </div>
+        </div>
+
+        <!-- Premium Wallet Section -->
+        <div class="wallet-container">
+            <div class="wallet-header">
+                <div class="wallet-status-group">
+                    <div class="status-indicator" id="statusDot">
+                        <span class="status-pulse"></span>
+                    </div>
+                    <span id="walletStatusText">Wallet Disconnected</span>
+                </div>
+                <button id="connectWallet" class="btn-connect">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 4C2 2.89543 2.89543 2 4 2H16C17.1046 2 18 2.89543 18 4V16C18 17.1046 17.1046 18 16 18H4C2.89543 18 2 17.1046 2 16V4Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M14 12C14.5523 12 15 11.5523 15 11C15 10.4477 14.5523 10 14 10C13.4477 10 13 10.4477 13 11C13 11.5523 13.4477 12 14 12Z" fill="currentColor"/>
+                    </svg>
+                    <span>Connect Wallet</span>
+                </button>
+            </div>
+            
+            <div id="walletInfo" class="wallet-details" style="display:none;">
+                <div class="wallet-row">
+                    <span class="wallet-label">Connected Address</span>
+                    <span id="walletAddress" class="wallet-address-text"></span>
+                </div>
+                <div class="wallet-row">
+                    <span class="wallet-label">Balance</span>
+                    <span class="wallet-balance-group">
+                        <span id="walletBalance" class="wallet-balance-text">0.0000</span>
+                        <span class="wallet-currency">MINTME</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Cost Card -->
+        <div class="cost-card">
+            <div class="cost-card-left">
+                <div class="cost-icon-wrapper">
+                    <span>💰</span>
+                </div>
+                <div>
+                    <div class="cost-title">Deployment Fee</div>
+                    <div class="cost-amount">4,000 MINTME</div>
+                    <div class="cost-usd">~ $2.10 USD</div>
+                </div>
+            </div>
+            <div class="cost-card-right">
+                <span class="cost-badge">⚡ Best Price on MintMe</span>
+            </div>
+        </div>
+
+        <!-- Premium Form -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <h3>✨ Token Configuration</h3>
+                <span class="step-indicator">Step 2 of 3</span>
             </div>
 
             <form id="deployForm" class="deploy-form">
                 <div class="form-group">
-                    <label for="tokenName">
+                    <label class="form-label">
                         Token Name
                         <span class="required">*</span>
                     </label>
-                    <div class="input-wrapper">
+                    <div class="input-group">
                         <span class="input-icon">📝</span>
                         <input 
                             type="text" 
                             id="tokenName" 
-                            placeholder="e.g., My Awesome Token" 
+                            placeholder="e.g., MintMe Coin" 
                             required
                             autocomplete="off"
                         >
-                        <span class="input-hint">Choose a unique name</span>
+                        <span class="input-clear">✕</span>
                     </div>
+                    <span class="input-help">Choose a unique name for your token</span>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="tokenSymbol">
+                        <label class="form-label">
                             Symbol
                             <span class="required">*</span>
                         </label>
-                        <div class="input-wrapper">
+                        <div class="input-group">
                             <span class="input-icon">🏷️</span>
                             <input 
                                 type="text" 
                                 id="tokenSymbol" 
-                                placeholder="MAT" 
+                                placeholder="MINT" 
                                 maxlength="10" 
                                 required
                                 autocomplete="off"
                             >
-                            <span class="input-hint">Max 10 chars</span>
                         </div>
+                        <span class="input-help">Max 10 characters</span>
                     </div>
 
                     <div class="form-group">
-                        <label for="initialSupply">
+                        <label class="form-label">
                             Supply
                             <span class="required">*</span>
                         </label>
-                        <div class="input-wrapper">
+                        <div class="input-group">
                             <span class="input-icon">🔢</span>
                             <input 
                                 type="number" 
@@ -144,17 +197,17 @@
                                 min="1" 
                                 required
                             >
-                            <span class="input-hint">Total tokens to mint</span>
                         </div>
+                        <span class="input-help">Total tokens to mint</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="ownerAddress">
+                    <label class="form-label">
                         Owner Address
                         <span class="required">*</span>
                     </label>
-                    <div class="input-wrapper">
+                    <div class="input-group">
                         <span class="input-icon">👤</span>
                         <input 
                             type="text" 
@@ -163,64 +216,73 @@
                             required
                             autocomplete="off"
                         >
-                        <span class="input-hint">Will receive all tokens</span>
                     </div>
+                    <span class="input-help">Address that will receive all tokens</span>
                 </div>
 
-                <button type="submit" id="deployBtn" class="btn btn-success">
-                    <span class="btn-icon">⚡</span>
-                    <span class="btn-text">Deploy Token</span>
-                    <span class="btn-subtext">4,000 MINTME</span>
+                <button type="submit" id="deployBtn" class="btn-deploy" disabled>
+                    <span class="btn-deploy-content">
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">Deploy Token</span>
+                        <span class="btn-cost">4,000 MINTME</span>
+                    </span>
                 </button>
             </form>
         </div>
 
-        <!-- Status Messages -->
-        <div id="status" class="status" style="display:none;"></div>
-        
-        <!-- Result Card -->
+        <!-- Status & Result -->
+        <div id="status" class="status-message" style="display:none;"></div>
         <div id="result" class="result-card" style="display:none;"></div>
 
-        <!-- Info Box -->
-        <div class="info-box">
+        <!-- Premium Info Section -->
+        <div class="info-section">
             <div class="info-header">
                 <span class="info-icon">💡</span>
                 <h3>How It Works</h3>
             </div>
-            <div class="steps-grid">
-                <div class="step">
-                    <div class="step-number">1</div>
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-number">01</div>
                     <div class="step-content">
                         <h4>Connect Wallet</h4>
-                        <p>Connect your MetaMask or Web3 wallet</p>
+                        <p>Connect your MetaMask or Web3 wallet to MintMe</p>
                     </div>
+                    <div class="step-arrow">→</div>
                 </div>
-                <div class="step">
-                    <div class="step-number">2</div>
+                <div class="step-item">
+                    <div class="step-number">02</div>
                     <div class="step-content">
                         <h4>Configure Token</h4>
-                        <p>Enter name, symbol, and supply</p>
+                        <p>Set your token name, symbol, and total supply</p>
                     </div>
+                    <div class="step-arrow">→</div>
                 </div>
-                <div class="step">
-                    <div class="step-number">3</div>
+                <div class="step-item">
+                    <div class="step-number">03</div>
                     <div class="step-content">
                         <h4>Deploy & Mint</h4>
-                        <p>Pay fee & receive your token</p>
+                        <p>Pay the fee and receive your deployed token</p>
                     </div>
+                    <div class="step-arrow">✓</div>
                 </div>
             </div>
-            <div class="security-badge">
+            
+            <div class="security-banner">
                 <span class="security-icon">🔒</span>
-                <span>Your private key never leaves your wallet</span>
+                <span>Your private key never leaves your wallet — 100% secure</span>
             </div>
         </div>
 
-        <!-- Footer -->
+        <!-- Premium Footer -->
         <div class="footer">
             <span>Built with ❤️ for the MintMe Community</span>
-            <a href="#" class="footer-link">Documentation</a>
-            <a href="#" class="footer-link">GitHub</a>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Documentation</a>
+                <span class="footer-divider">•</span>
+                <a href="#" class="footer-link">GitHub</a>
+                <span class="footer-divider">•</span>
+                <a href="#" class="footer-link">Support</a>
+            </div>
         </div>
     </div>
 
