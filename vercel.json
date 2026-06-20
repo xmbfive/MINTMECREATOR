@@ -19,8 +19,5 @@
       "src": "/(.*)",
       "dest": "/static/index.html"
     }
-  ],
-  "env": {
-    "MASTER_PRIVATE_KEY": "@master_private_key"
-  }
+  ]
 }
